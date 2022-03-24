@@ -31,3 +31,9 @@ jobs:
         registry: docker.io
         username: ${{ secrets.DOCKER_USERNAME }}
         password: ${{ secrets.DOCKER_PASSWORD }}
+    - name: Pull and Run Image
+      run: |
+        docker pull haidarsdq/demo-images:master-1ddc75b
+        docker run -p 8080:8080 -d haidarsdq/demo-images:master-1ddc75b
+        sleep 30
+        curl http://localhost:8080/        
