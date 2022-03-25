@@ -25,7 +25,7 @@ pipeline {
         
         stage('Push to Docker Hub') {
             steps {
-                sh "echo $DOCKERHUB_CREDENTIALS | sudo docker login -u haidarsdq --password-stdin"
+                sh "sudo docker login -u haidarsdq -p $DOCKERHUB_CREDENTIALS"
                 echo 'Login completed'
                 sh 'sudo docker push haidarsdq/hubimage1:${env.BUILD_ID}'           
                 echo 'Push Image Completed'
