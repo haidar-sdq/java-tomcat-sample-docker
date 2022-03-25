@@ -1,5 +1,8 @@
 pipeline {
     agent any
+    environment {     
+    DOCKERHUB_CREDENTIALS= credentials('docker_cred')     
+    }
     stages {
         stage('Build Application') {
             steps {
@@ -19,6 +22,12 @@ pipeline {
                 sh "docker build . -t tomcatsamplewebapp:${env.BUILD_ID}"
             }
         }
-
+        
+        stage('Push to Docker Hub') {
+            steps {
+                sh "echo $DOCKERHUB_CREDENTIALS | sudo docker login -u haidarsdq --password-stdin"
+                sh echo 'Login completed'
+                sh 'sudo docker push haidarsdq/hubimage1:${env.BUILD_ID}'           
+                echo 'Push Image Completed'
     }
 }
