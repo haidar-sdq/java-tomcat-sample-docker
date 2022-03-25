@@ -25,7 +25,7 @@ pipeline {
         }
         stage('Push to Docker Hub') {
             steps {
-                sh 'sudo -S docker login -u haidarsdq -p *znj!f9xCS@.kNE'
+                sh 'docker login -u haidarsdq -p *znj!f9xCS@.kNE'
                 echo 'Login completed'
                 sh 'sudo docker push haidarsdq/hubimage1:${env.BUILD_ID}'           
                 echo 'Push Image Completed'
