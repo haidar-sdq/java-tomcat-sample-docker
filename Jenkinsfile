@@ -1,10 +1,5 @@
 pipeline {
     agent any
-    environment {     
-    registry = "haidarsdq/hubimage1"
-    registryCredential = 'docker_cred'
-    dockerImage = ''
-    }
     stages {
         stage('Cloning our Git') { 
             steps { 
@@ -28,15 +23,14 @@ pipeline {
                 sh "docker build . -t tomcatsamplewebapp:${env.BUILD_ID}"
             }
         }
-        stage('Deploy our image') { 
-            steps { 
-                script { 
-                    docker.withRegistry( '', registryCredential ) { 
-                        dockerImage.push() 
-                    }
-                } 
-            }
-        } 
+        stage('Push to Docker Hub') {
+            steps {
+                sh 'sudo docker login -u $DOCKERHUB_CREDENTIALS_USR -p *znj!f9xCS@.kNE'
+                echo 'Login completed'
+                sh 'sudo docker push haidarsdq/hubimage1:${env.BUILD_ID}'           
+                echo 'Push Image Completed'
+    }
+}
         
     }
 }
