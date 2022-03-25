@@ -1,9 +1,16 @@
 pipeline {
     agent any
     environment {     
-    DOCKERHUB_CREDENTIALS= credentials('docker_cred')     
+    registry = "haidarsdq/hubimage1"
+    registryCredential = 'docker_cred'
+    dockerImage = ''
     }
     stages {
+        stage('Cloning our Git') { 
+            steps { 
+                git 'https://github.com/haidar-sdq/java-tomcat-sample-docker.git' 
+            }
+        } 
         stage('Build Application') {
             steps {
                 sh 'mvn -f pom.xml clean package'
@@ -15,21 +22,21 @@ pipeline {
                 }
             }
         }
-
         stage('Create Tomcat Docker Image'){
             steps {
                 sh "pwd"
                 sh "docker build . -t tomcatsamplewebapp:${env.BUILD_ID}"
             }
         }
+        stage('Deploy our image') { 
+            steps { 
+                script { 
+                    docker.withRegistry( '', registryCredential ) { 
+                        dockerImage.push() 
+                    }
+                } 
+            }
+        } 
         
-        stage('Push to Docker Hub') {
-            steps {
-                sh 'echo $DOCKERHUB_CREDENTIALS_PSW | sudo docker login -u $DOCKERHUB_CREDENTIALS_USR -S --password-stdin'
-                echo 'Login completed'
-                sh 'sudo docker push haidarsdq/hubimage1:${env.BUILD_ID}'           
-                echo 'Push Image Completed'
-    }
-}
     }
 }
